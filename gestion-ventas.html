@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Ventas - Hongos Ostras</title>
+    <link rel="icon" type="image/x-icon" href="assets/Logo-final.ico">
+    <link rel="icon" type="image/png" href="assets/Logo-final.png">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/gestion-ventas.css">
+</head>
+<body>
+<!-- Header con Menú Hamburguesa -->
+<header class="header">
+    <div class="header-container">
+        <button class="menu-hamburguesa" id="menuToggle" aria-label="Menú">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <div class="header-logo-section">
+            <a href="index.html" class="header-link">
+                <div class="header-logo">
+                    <img src="assets/Logo-final.png" alt="AKAX Logo" style="width: 100%; height: 100%; object-fit: contain;">
+                </div>
+                <div>
+                    <h1 class="header-title">AKAX</h1>
+                    <p class="header-subtitle">Hongos Pajomel</p>
+                    <p class="header-subtitle-small">Sistema de Ventas</p>
+                </div>
+            </a>
+        </div>
+        
+        <div id="connectionIndicator" class="connection-indicator connecting" onclick="window.reintentarConexionManual()">
+            <span class="connection-icon" id="connectionIcon">⏳</span>
+            <span class="connection-status" id="connectionStatus">Conectando...</span>
+            
+            <div class="connection-details">
+                <p><strong>Estado:</strong> <span id="detailStatus">Verificando...</span></p>
+                <p><strong>Base de datos:</strong> Firebase Firestore</p>
+                <p><strong>Proyecto:</strong> <span id="detailProject">hongos-ostras</span></p>
+                <button class="retry-button" onclick="event.stopPropagation(); window.reintentarConexionManual();">
+                    🔄 Reintentar Conexión
+                </button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="nav-sidebar-overlay" id="navOverlay"></div>
+
+<aside class="nav-sidebar" id="navSidebar">
+    <div class="nav-sidebar-header">
+        <img src="assets/Logo-final.png" alt="AKAX">
+        <div>
+            <h3 class="nav-sidebar-title">AKAX</h3>
+            <p style="margin: 0; font-size: 0.85rem; opacity: 0.9;">Menú Principal</p>
+        </div>
+    </div>
+    
+    <ul class="nav-sidebar-links">
+        <li><a href="index.html" class="nav-sidebar-link"><span>📊</span><span>Inicio</span></a></li>
+        <li><a href="registro-venta.html" class="nav-sidebar-link"><span>➕</span><span>Nueva Venta</span></a></li>
+        <li><a href="gestion-ventas.html" class="nav-sidebar-link"><span>📦</span><span>Gestión Ventas</span></a></li>
+        <li><a href="clientes.html" class="nav-sidebar-link"><span>👥</span><span>Clientes</span></a></li>
+        <li><a href="informes.html" class="nav-sidebar-link"><span>📄</span><span>Informes</span></a></li>
+    </ul>
+</aside>
+
+<nav class="nav">
+    <div class="nav-container">
+        <a href="index.html" class="nav-link">📊 Inicio</a>
+        <a href="registro-venta.html" class="nav-link">➕ Nueva Venta</a>
+        <a href="gestion-ventas.html" class="nav-link active">📦 Gestión Ventas</a>
+        <a href="clientes.html" class="nav-link">👥 Clientes</a>
+        <a href="informes.html" class="nav-link">📄 Informes</a>
+    </div>
+</nav>
+
+<main>
+    <div class="page-header">
+        <div>
+            <h2 class="page-title">Gestión de Ventas</h2>
+            <p class="page-subtitle">Administra, edita y elimina ventas registradas</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-primary" onclick="window.location.href='registro-venta.html'">➕ Nueva Venta</button>
+        </div>
+    </div>
+
+    <!-- Filtros y Búsqueda MEJORADOS -->
+    <div class="card filters-card">
+        <div class="filters-header">
+            <h3>🔍 Filtrar Ventas</h3>
+            <div class="filters-summary" id="filtrosSummary">
+                <span class="filter-badge">📊 Total: <strong id="totalFiltrado">0</strong> ventas</span>
+                <span class="filter-badge" id="montoFiltrado" style="display: none;">💰 <strong></strong></span>
+            </div>
+        </div>
+        
+        <div class="filters-container">
+            <!-- Búsqueda -->
+            <div class="filter-group filter-search">
+                <label>
+                    <span class="filter-icon">🔍</span>
+                    Buscar
+                </label>
+                <input type="search" id="searchInput" class="form-input" placeholder="Cliente, producto, método...">
+            </div>
+
+            <!-- Fecha Desde -->
+            <div class="filter-group">
+                <label>
+                    <span class="filter-icon">📅</span>
+                    Desde
+                </label>
+                <input type="date" id="fechaDesde" class="form-input">
+            </div>
+
+            <!-- Fecha Hasta -->
+            <div class="filter-group">
+                <label>
+                    <span class="filter-icon">📅</span>
+                    Hasta
+                </label>
+                <input type="date" id="fechaHasta" class="form-input">
+            </div>
+
+            <!-- Estado de Pago -->
+            <div class="filter-group">
+                <label>
+                    <span class="filter-icon">💳</span>
+                    Estado de Pago
+                </label>
+                <select id="estadoFiltro" class="form-select">
+                    <option value="">Todos los estados</option>
+                    <option value="Pagado">✅ Pagado</option>
+                    <option value="Parcial">📊 Pago Parcial</option>
+                    <option value="Pendiente">⏳ Sin Pagar</option>
+                </select>
+            </div>
+
+            <!-- Tipo de Hongo -->
+            <div class="filter-group">
+                <label>
+                    <span class="filter-icon">🍄</span>
+                    Tipo de Hongo
+                </label>
+                <select id="hongoFiltro" class="form-select">
+                    <option value="">Todos los productos</option>
+                    <option value="Ostra Fresco">Ostra Fresco</option>
+                    <option value="Ostra Deshidratado">Ostra Deshidratado</option>
+                    <option value="Ostra 3">Ostra 3</option>
+                    <option value="Ostra 4">Ostra 4</option>
+                    <option value="Otro">Otro</option>
+                </select>
+            </div>
+
+            <!-- Método de Pago -->
+            <div class="filter-group">
+                <label>
+                    <span class="filter-icon">💵</span>
+                    Método de Pago
+                </label>
+                <select id="metodoPagoFiltro" class="form-select">
+                    <option value="">Todos los métodos</option>
+                    <option value="Efectivo">💵 Efectivo</option>
+                    <option value="Transferencia">🏦 Transferencia</option>
+                    <option value="Tarjeta">💳 Tarjeta</option>
+                    <option value="Cheque">📝 Cheque</option>
+                    <option value="Otro">📄 Otro</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Botones de Filtro -->
+        <div class="filters-actions">
+            <button class="btn btn-primary" id="btnFiltrar">🔍 Aplicar Filtros</button>
+            <button class="btn btn-secondary" id="btnLimpiar">🔄 Limpiar Todo</button>
+            <button class="btn btn-quick-filter" data-filter="hoy">📅 Hoy</button>
+            <button class="btn btn-quick-filter" data-filter="semana">📆 Esta Semana</button>
+            <button class="btn btn-quick-filter" data-filter="mes">📊 Este Mes</button>
+        </div>
+    </div>
+
+    <!-- Tabla de Ventas -->
+    <div class="card">
+        <div class="table-header">
+            <h3>📋 Todas las Ventas (<span id="totalVentas">0</span>)</h3>
+            <div class="table-actions">
+                <button class="btn btn-secondary btn-sm" id="btnExportar">📥 Exportar</button>
+            </div>
+        </div>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Cliente</th>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="ventasTable">
+                    <tr><td colspan="7" class="text-center"><div class="spinner"></div></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<!-- Modal Ver Detalles -->
+<div class="modal-overlay" id="modalDetalles">
+    <div class="modal-content modal-large">
+        <div class="modal-header">
+            <h2>👁️ Detalles de la Venta</h2>
+            <button class="modal-close" onclick="cerrarModal('modalDetalles')">✖</button>
+        </div>
+        
+        <div id="detallesContent" class="details-content"></div>
+
+        <div class="modal-footer" id="modalDetallesFooter">
+            <button class="btn btn-secondary" onclick="cerrarModal('modalDetalles')">Cerrar</button>
+            <button class="btn btn-success" id="btnGenerarRecibo" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">📄 Generar Recibo</button>
+            <button class="btn btn-primary" id="btnEditarDesdeDetalle">✏️ Editar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Editar Venta -->
+<div class="modal-overlay" id="modalEditar">
+    <div class="modal-content modal-large">
+        <div class="modal-header">
+            <h2>✏️ Editar Venta</h2>
+            <button class="modal-close" onclick="cerrarModal('modalEditar')">✖</button>
+        </div>
+        
+        <div class="edit-form" id="editForm">
+            <input type="hidden" id="editVentaId">
+            
+            <div class="form-section">
+                <h3 class="form-section-title">📋 Información del Cliente</h3>
+                <div class="form-group">
+                    <label class="form-label">Cliente *</label>
+                    <select id="editClienteId" class="form-select" disabled>
+                        <option value="">Cargando clientes...</option>
+                    </select>
+                    <p style="font-size: 0.85rem; color: var(--color-text-light); margin-top: 0.5rem;">
+                        ℹ️ Cliente original: <strong id="clienteOriginal"></strong>
+                    </p>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">📅 Fecha de la Venta *</label>
+                    <input type="date" id="editFechaVenta" class="form-input" required>
+                    <p style="font-size: 0.85rem; color: var(--color-text-light); margin-top: 0.5rem;">
+                        ℹ️ Puedes modificar la fecha si fue registrada incorrectamente
+                    </p>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3 class="form-section-title">🍄 Información del Producto</h3>
+                <div class="grid grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Tipo de Hongo *</label>
+                        <select id="editTipoHongo" class="form-select" required>
+                            <option value="Ostra Fresco">Ostra Fresco</option>
+                            <option value="Ostra Deshidratado">Ostra Deshidratado</option>
+                            <option value="Ostra 3">Ostra 3</option>
+                            <option value="Ostra 4">Ostra 4</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="grid grid-3">
+                    <div class="form-group">
+                        <label class="form-label">Cantidad *</label>
+                        <input type="number" id="editCantidad" class="form-input" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Unidad</label>
+                        <select id="editUnidadMedida" class="form-select">
+                            <option value="libras">Libras</option>
+                            <option value="kilogramos">Kilogramos</option>
+                            <option value="gramos">Gramos</option>
+                            <option value="unidades">Unidades</option>
+                            <option value="cajas">Cajas</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Precio Unitario (Q) *</label>
+                        <input type="number" id="editPrecioUnitario" class="form-input" step="0.01">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3 class="form-section-title">💰 Información de Pago</h3>
+                <div class="grid grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Método de Pago</label>
+                        <select id="editMetodoPago" class="form-select">
+                            <option value="Efectivo">💵 Efectivo</option>
+                            <option value="Transferencia">🏦 Transferencia</option>
+                            <option value="Tarjeta">💳 Tarjeta</option>
+                            <option value="Cheque">📝 Cheque</option>
+                            <option value="Otro">📄 Otro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Estado de Pago</label>
+                        <select id="editEstadoPago" class="form-select">
+                            <option value="Pagado">✅ Pagado</option>
+                            <option value="Pendiente">⏳ Pendiente</option>
+                            <option value="Parcial">📊 Parcial</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Descuento (Q)</label>
+                        <input type="number" id="editDescuento" class="form-input" step="0.01" value="0">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3 class="form-section-title">📝 Notas</h3>
+                <div class="form-group">
+                    <textarea id="editNotas" class="form-textarea" rows="3" placeholder="Notas adicionales..."></textarea>
+                </div>
+            </div>
+
+            <div class="total-summary">
+                <div class="total-row">
+                    <span>Subtotal:</span>
+                    <span id="editSubtotalDisplay">Q0.00</span>
+                </div>
+                <div class="total-row">
+                    <span>Descuento:</span>
+                    <span id="editDescuentoDisplay" class="text-danger">-Q0.00</span>
+                </div>
+                <div class="total-row total-main">
+                    <span>TOTAL:</span>
+                    <span id="editTotalDisplay">Q0.00</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn" onclick="cerrarModal('modalEditar')" style="background: #6b7280; color: white;">Cancelar</button>
+            <button class="btn btn-primary" id="btnGuardarEdicion">💾 Guardar Cambios</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Registrar Pago -->
+<div class="modal-overlay" id="modalRegistrarPago">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>💰 Registrar Pago</h2>
+            <button class="modal-close" onclick="cerrarModal('modalRegistrarPago')">✖</button>
+        </div>
+        
+        <input type="hidden" id="pagoVentaId">
+        
+        <div style="background: #f0f9ff; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+            <p style="margin: 0 0 0.5rem 0; color: var(--color-text);"><strong>Cliente:</strong> <span id="pagoClienteNombre"></span></p>
+            <p style="margin: 0 0 0.5rem 0; color: var(--color-text);"><strong>Total de la venta:</strong> <span id="pagoTotalVenta" style="font-weight: 700; color: var(--color-primary);"></span></p>
+            <p style="margin: 0 0 0.5rem 0; color: var(--color-success);"><strong>✅ Ya pagado:</strong> <span id="pagoMontoPagado"></span></p>
+            <p style="margin: 0; color: var(--color-warning);"><strong>⏳ Saldo pendiente:</strong> <span id="pagoSaldoPendiente" style="font-size: 1.2rem; font-weight: 700;"></span></p>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Monto a Pagar (Q) *</label>
+            <input type="number" id="pagoMontoNuevo" class="form-input" step="0.01" min="0.01" placeholder="0.00">
+            <p style="font-size: 0.85rem; color: var(--color-text-light); margin-top: 0.5rem;">
+                💡 Puedes pagar el total o una parte del saldo pendiente
+            </p>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Método de Pago</label>
+            <select id="pagoMetodo" class="form-select">
+                <option value="Efectivo">💵 Efectivo</option>
+                <option value="Transferencia">🏦 Transferencia</option>
+                <option value="Tarjeta">💳 Tarjeta</option>
+                <option value="Cheque">📝 Cheque</option>
+                <option value="Otro">📄 Otro</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Fecha del Pago</label>
+            <input type="date" id="pagoFecha" class="form-input">
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Notas del Pago</label>
+            <textarea id="pagoNotas" class="form-textarea" rows="2" placeholder="Ej: Abono parcial, pago final, etc."></textarea>
+        </div>
+        
+        <div class="modal-footer">
+            <button class="btn" onclick="cerrarModal('modalRegistrarPago')" style="flex: 1; background: #6b7280; color: white;">Cancelar</button>
+            <button class="btn btn-primary" id="btnGuardarPago" style="flex: 1;">💾 Registrar Pago</button>
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
+    <p>© 2025 AKAX - Hongos Pajomel</p>
+    <p>Cultivando calidad, cosechando confianza 🍄</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script type="module" src="js/gestion-ventas.js"></script>
+</body>
+</html>

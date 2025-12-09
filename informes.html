@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informes - Hongos Ostras</title>
+    <link rel="icon" type="image/x-icon" href="assets/Logo-final.ico">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/informes.css">
+</head>
+<body>
+<header class="header">
+    <div class="header-container">
+        <button class="menu-hamburguesa" id="menuToggle" aria-label="Menú">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <div class="header-logo-section">
+            <a href="index.html" class="header-link">
+                <div class="header-logo">
+                    <img src="assets/Logo-final.png" alt="AKAX Logo" style="width: 100%; height: 100%; object-fit: contain;">
+                </div>
+                <div>
+                    <h1 class="header-title">AKAX</h1>
+                    <p class="header-subtitle">Hongos Pajomel</p>
+                    <p class="header-subtitle-small">Sistema de Ventas</p>
+                </div>
+            </a>
+        </div>
+        
+        <div id="connectionIndicator" class="connection-indicator connecting" onclick="window.reintentarConexionManual()">
+            <span class="connection-icon" id="connectionIcon">⏳</span>
+            <span class="connection-status" id="connectionStatus">Conectando...</span>
+            
+            <div class="connection-details">
+                <p><strong>Estado:</strong> <span id="detailStatus">Verificando...</span></p>
+                <p><strong>Base de datos:</strong> Firebase Firestore</p>
+                <p><strong>Proyecto:</strong> <span id="detailProject">hongos-ostras</span></p>
+                <button class="retry-button" onclick="event.stopPropagation(); window.reintentarConexionManual();">
+                    🔄 Reintentar Conexión
+                </button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="nav-sidebar-overlay" id="navOverlay"></div>
+
+<aside class="nav-sidebar" id="navSidebar">
+    <div class="nav-sidebar-header">
+        <img src="assets/Logo-final.png" alt="AKAX">
+        <div>
+            <h3 class="nav-sidebar-title">AKAX</h3>
+            <p style="margin: 0; font-size: 0.85rem; opacity: 0.9;">Menú Principal</p>
+        </div>
+    </div>
+    
+    <ul class="nav-sidebar-links">
+        <li><a href="index.html" class="nav-sidebar-link"><span>📊</span><span>Inicio</span></a></li>
+        <li><a href="registro-venta.html" class="nav-sidebar-link"><span>➕</span><span>Nueva Venta</span></a></li>
+        <li><a href="gestion-ventas.html" class="nav-sidebar-link"><span>📦</span><span>Gestión Ventas</span></a></li>
+        <li><a href="clientes.html" class="nav-sidebar-link"><span>👥</span><span>Clientes</span></a></li>
+        <li><a href="informes.html" class="nav-sidebar-link"><span>📄</span><span>Informes</span></a></li>
+    </ul>
+</aside>
+
+<nav class="nav">
+    <div class="nav-container">
+        <a href="index.html" class="nav-link">📊 Inicio</a>
+        <a href="registro-venta.html" class="nav-link">➕ Nueva Venta</a>
+        <a href="gestion-ventas.html" class="nav-link">📦 Gestión Ventas</a>
+        <a href="clientes.html" class="nav-link">👥 Clientes</a>
+        <a href="informes.html" class="nav-link active">📄 Informes</a>
+    </div>
+</nav>
+
+<main>
+    <div class="page-header">
+        <div>
+            <h2 class="page-title">Informes y Análisis</h2>
+            <p class="page-subtitle">Análisis detallado de ventas y métricas del negocio</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-success" id="btnExportar" style="background: #107c41;">📊 Descargar Excel (.xlsx)</button>
+        </div>
+    </div>
+
+    <div class="card filters-card">
+        <h3>🔍 Filtros de Análisis</h3>
+        <div class="filters-container">
+            <div class="filter-group">
+                <label>📅 Desde</label>
+                <input type="date" id="fechaDesde" class="form-input">
+            </div>
+            <div class="filter-group">
+                <label>📅 Hasta</label>
+                <input type="date" id="fechaHasta" class="form-input">
+            </div>
+            <div class="filter-group">
+                <label>⚡ Período Rápido</label>
+                <select id="periodoRapido" class="form-select">
+                    <option value="">Personalizado</option>
+                    <option value="hoy">Hoy</option>
+                    <option value="ayer">Ayer</option>
+                    <option value="semana">Esta Semana</option>
+                    <option value="mes">Este Mes</option>
+                    <option value="trimestre">Este Trimestre</option>
+                    <option value="ano">Este Año</option>
+                    <option value="ultimos7">Últimos 7 días</option>
+                    <option value="ultimos30">Últimos 30 días</option>
+                    <option value="ultimos90">Últimos 90 días</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>🍄 Tipo de Hongo</label>
+                <select id="filtroHongo" class="form-select">
+                    <option value="">Todos</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>💳 Estado de Pago</label>
+                <select id="filtroEstado" class="form-select">
+                    <option value="">Todos</option>
+                    <option value="Pagado">Pagado</option>
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="Parcial">Parcial</option>
+                </select>
+            </div>
+            <div class="filter-group" style="display: flex; gap: 0.5rem; align-items: flex-end;">
+                <button class="btn btn-primary" id="btnAplicarFiltros" style="flex: 1;">🔍 Aplicar</button>
+                <button class="btn" id="btnLimpiarFiltros" style="flex: 1; background: #6b7280; color: white;">🔄 Limpiar</button>
+            </div>
+        </div>
+        
+        <div class="period-info" id="periodInfo" style="margin-top: 1rem; padding: 1rem; background: #f0f9ff; border-radius: 8px; display: none;">
+            <strong>📊 Período analizado:</strong> <span id="periodText"></span>
+        </div>
+    </div>
+
+    <div class="card stats-card">
+        <h3>📊 Resumen General</h3>
+        <div class="summary-grid">
+            <div class="summary-card gradient-success">
+                <div class="summary-icon">💰</div>
+                <div class="summary-content">
+                    <p class="summary-label">Total Ingresos</p>
+                    <p class="summary-value" id="totalIngresos">Q0.00</p>
+                    <p class="summary-detail" id="detalleIngresos">Período completo</p>
+                </div>
+            </div>
+            <div class="summary-card gradient-info">
+                <div class="summary-icon">📈</div>
+                <div class="summary-content">
+                    <p class="summary-label">Total Ventas</p>
+                    <p class="summary-value" id="totalVentas">0</p>
+                    <p class="summary-detail" id="detalleVentas">Transacciones</p>
+                </div>
+            </div>
+            <div class="summary-card gradient-warning">
+                <div class="summary-icon">⚖️</div>
+                <div class="summary-content">
+                    <p class="summary-label">Cantidad Vendida</p>
+                    <p class="summary-value" id="cantidadTotal">0</p>
+                    <p class="summary-detail" id="detalleCantidad">Libras totales</p>
+                </div>
+            </div>
+            <div class="summary-card gradient-purple">
+                <div class="summary-icon">🎯</div>
+                <div class="summary-content">
+                    <p class="summary-label">Ticket Promedio</p>
+                    <p class="summary-value" id="ticketPromedio">Q0.00</p>
+                    <p class="summary-detail" id="detalleTicket">Por venta</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>📊 Análisis de Tendencias</h3>
+        <div class="grid grid-2">
+            <div class="trend-card">
+                <div class="trend-header">
+                    <span class="trend-title">💵 Ingresos Diarios</span>
+                    <span class="trend-value" id="promedioIngresosDiarios">Q0.00/día</span>
+                </div>
+                <div class="trend-bar">
+                    <div class="trend-fill" id="trendIngresos" style="width: 0%"></div>
+                </div>
+            </div>
+            <div class="trend-card">
+                <div class="trend-header">
+                    <span class="trend-title">📦 Ventas Diarias</span>
+                    <span class="trend-value" id="promedioVentasDiarias">0/día</span>
+                </div>
+                <div class="trend-bar">
+                    <div class="trend-fill" id="trendVentas" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-2">
+        <div class="card metrics-card">
+            <h3>💵 Métricas de Pago</h3>
+            <div class="metrics-list">
+                <div class="metric-item">
+                    <span class="metric-label">Pagos Completados</span>
+                    <span class="metric-value success" id="pagosPagados">Q0.00</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-label">Pagos Pendientes</span>
+                    <span class="metric-value warning" id="pagosPendientes">Q0.00</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-label">Pagos Parciales</span>
+                    <span class="metric-value info" id="pagosParciales">Q0.00</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-label">Tasa de Cobro</span>
+                    <span class="metric-value" id="tasaCobro">0%</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card metrics-card">
+            <h3>🍄 Métricas de Producto</h3>
+            <div class="metrics-list">
+                <div class="metric-item">
+                    <span class="metric-label">Producto Más Vendido</span>
+                    <span class="metric-value" id="productoTop">-</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-label">Tipo Más Popular</span>
+                    <span class="metric-value" id="calidadTop">-</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-label">Precio Promedio</span>
+                    <span class="metric-value" id="precioPromedio">Q0.00</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-label">Descuento Promedio</span>
+                    <span class="metric-value" id="descuentoPromedio">Q0.00</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>🏆 Top 10 Clientes</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Cliente</th>
+                        <th>Nº Compras</th>
+                        <th>Total Gastado</th>
+                        <th>Ticket Promedio</th>
+                        <th>Última Compra</th>
+                    </tr>
+                </thead>
+                <tbody id="topClientesTable">
+                    <tr><td colspan="6" class="text-center">Cargando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card mb-2">
+        <h3>🍄 Análisis por Tipo de Hongo</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Cantidad Total</th>
+                        <th>Nº Ventas</th>
+                        <th>Ingreso Total</th>
+                        <th>Precio Promedio</th>
+                        <th>% del Total</th>
+                    </tr>
+                </thead>
+                <tbody id="ventasPorHongoTable">
+                    <tr><td colspan="6" class="text-center">Cargando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>💳 Ventas por Método de Pago</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Método</th>
+                        <th>Nº Transacciones</th>
+                        <th>Total</th>
+                        <th>Porcentaje</th>
+                        <th>Promedio</th>
+                    </tr>
+                </thead>
+                <tbody id="ventasPorMetodoTable">
+                    <tr><td colspan="5" class="text-center">Cargando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header-actions">
+            <h3>📋 Historial de Ventas</h3>
+            <input type="search" id="searchVentas" class="search-input" placeholder="🔍 Buscar...">
+        </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Cliente</th>
+                        <th>Hongo</th>
+                        <th>Cantidad</th>
+                        <th>Método</th>
+                        <th>Estado</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody id="historialVentasTable">
+                    <tr><td colspan="7" class="text-center"><div class="spinner"></div></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+    <footer class="footer">
+        <p>© 2025 AKAX - Hongos Pajomel</p>
+        <p style="font-size: 0.85rem; opacity: 0.6;">Cultivando calidad, cosechando confianza</p>
+    </footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script type="module" src="js/informes.js"></script>
+</body>
+</html>

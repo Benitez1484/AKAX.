@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes - Hongos Ostras</title>
+   <link rel="icon" type="image/x-icon" href="assets/Logo-final.ico">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/clientes.css">
+</head>
+<body>
+    <!-- Header con Indicador de Conexión -->
+<!-- Header con Menú Hamburguesa -->
+<header class="header">
+    <div class="header-container">
+        <!-- Botón Menú Hamburguesa -->
+        <button class="menu-hamburguesa" id="menuToggle" aria-label="Menú">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <div class="header-logo-section">
+            <a href="index.html" class="header-link">
+                <div class="header-logo">
+                    <img src="assets/Logo-final.png" alt="AKAX Logo" style="width: 100%; height: 100%; object-fit: contain;">
+                </div>
+                <div>
+                    <h1 class="header-title">AKAX</h1>
+                    <p class="header-subtitle">Hongos Pajomel</p>
+                    <p class="header-subtitle-small">Sistema de Ventas</p>
+                </div>
+            </a>
+        </div>
+        
+        <!-- Indicador de Conexión -->
+        <div id="connectionIndicator" class="connection-indicator connecting" onclick="window.reintentarConexionManual()">
+            <span class="connection-icon" id="connectionIcon">⏳</span>
+            <span class="connection-status" id="connectionStatus">Conectando...</span>
+            
+            <div class="connection-details">
+                <p><strong>Estado:</strong> <span id="detailStatus">Verificando...</span></p>
+                <p><strong>Base de datos:</strong> Firebase Firestore</p>
+                <p><strong>Proyecto:</strong> <span id="detailProject">hongos-ostras</span></p>
+                <button class="retry-button" onclick="event.stopPropagation(); window.reintentarConexionManual();">
+                    🔄 Reintentar Conexión
+                </button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Overlay del Menú -->
+<div class="nav-sidebar-overlay" id="navOverlay"></div>
+
+<!-- Menú Lateral Desplegable -->
+<aside class="nav-sidebar" id="navSidebar">
+    <div class="nav-sidebar-header">
+        <img src="assets/Logo-final.png" alt="AKAX">
+        <div>
+            <h3 class="nav-sidebar-title">AKAX</h3>
+            <p style="margin: 0; font-size: 0.85rem; opacity: 0.9;">Menú Principal</p>
+        </div>
+    </div>
+    
+    <ul class="nav-sidebar-links">
+        <li>
+            <a href="index.html" class="nav-sidebar-link">
+                <span>📊</span>
+                <span>Inicio</span>
+            </a>
+        </li>
+        <li>
+            <a href="registro-venta.html" class="nav-sidebar-link">
+                <span>➕</span>
+                <span>Nueva Venta</span>
+            </a>
+        </li>
+        <li>
+            <a href="gestion-ventas.html" class="nav-sidebar-link">
+                <span>📦</span>
+                <span>Gestión Ventas</span>
+            </a>
+        </li>
+        <li>
+            <a href="clientes.html" class="nav-sidebar-link">
+                <span>👥</span>
+                <span>Clientes</span>
+            </a>
+        </li>
+        <li>
+            <a href="informes.html" class="nav-sidebar-link">
+                <span>📄</span>
+                <span>Informes</span>
+            </a>
+        </li>
+    </ul>
+</aside>
+
+<!-- Navegación Desktop -->
+<nav class="nav">
+    <div class="nav-container">
+        <a href="index.html" class="nav-link">📊 Inicio</a>
+        <a href="registro-venta.html" class="nav-link">➕ Nueva Venta</a>
+        <a href="gestion-ventas.html" class="nav-link">📦 Gestión Ventas</a>
+        <a href="clientes.html" class="nav-link">👥 Clientes</a>
+        <a href="informes.html" class="nav-link">📄 Informes</a>
+    </div>
+</nav>
+
+    <!-- Contenido Principal -->
+    <main>
+        <div class="page-header">
+            <div>
+                <h2 class="page-title">Gestión de Clientes</h2>
+                <p class="page-subtitle">Administra la información de tus clientes</p>
+            </div>
+            <button class="btn btn-primary" id="btnNuevoCliente">➕ Nuevo Cliente</button>
+        </div>
+
+        <!-- Filtro de Búsqueda -->
+        <div class="card" style="margin-bottom: 2rem;">
+            <div class="search-container">
+                <input type="search" id="searchClientes" class="form-input" placeholder="🔍 Buscar cliente por nombre, teléfono o email...">
+            </div>
+        </div>
+
+        <!-- Tabla de Clientes -->
+        <div class="card">
+            <div class="table-header">
+                <h3>👥 Lista de Clientes (<span id="totalClientes">0</span>)</h3>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Teléfono</th>
+                            <th>Email</th>
+                            <th>Dirección</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="clientesTable">
+                        <tr>
+                            <td colspan="5" class="text-center">
+                                <div class="spinner"></div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Nuevo Cliente -->
+    <div class="modal-overlay" id="modalCliente">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>➕ Nuevo Cliente</h2>
+                <button class="modal-close" id="btnCerrarModal">✖</button>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Nombre Completo *</label>
+                <input type="text" id="clienteNombre" class="form-input" placeholder="Ej: Oscar Perez" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Teléfono *</label>
+                <input type="tel" id="clienteTelefono" class="form-input" placeholder="Ej: 12345678" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" id="clienteEmail" class="form-input" placeholder="cliente@ejemplo.com">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Dirección</label>
+                <textarea id="clienteDireccion" class="form-textarea" rows="2" placeholder="Dirección completa..."></textarea>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn" id="btnCancelarCliente" style="flex: 1; background: #6b7280; color: white;">
+                    Cancelar
+                </button>
+                <button class="btn btn-primary" id="btnGuardarCliente" style="flex: 1;">
+                    💾 Guardar Cliente
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Cliente -->
+    <div class="modal-overlay" id="modalEditarCliente">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>✏️ Editar Cliente</h2>
+                <button class="modal-close" id="btnCerrarModalEditar">✖</button>
+            </div>
+            
+            <input type="hidden" id="editClienteIdHidden">
+            
+            <div class="form-group">
+                <label class="form-label">Nombre Completo *</label>
+                <input type="text" id="editNombre" class="form-input" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Teléfono *</label>
+                <input type="tel" id="editTelefono" class="form-input" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" id="editEmail" class="form-input">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Dirección</label>
+                <textarea id="editDireccion" class="form-textarea" rows="2"></textarea>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn" id="btnCancelarEditar" style="flex: 1; background: #6b7280; color: white;">
+                    Cancelar
+                </button>
+                <button class="btn btn-primary" id="btnActualizarCliente" style="flex: 1;">
+                    💾 Guardar Cambios
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2025 AKAX - Hongos Pajomel</p>
+        <p style="font-size: 0.85rem; opacity: 0.6;">Cultivando calidad, cosechando confianza</p>
+    </footer>
+
+    <script type="module" src="js/clientes.js"></script>
+</body>
+</html>

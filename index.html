@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio - Hongos Ostras</title>
+<link rel="icon" type="image/x-icon" href="assets/Logo-final.ico">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+<!-- Header Global -->
+ <!-- Header con Menú Hamburguesa -->
+<header class="header">
+    <div class="header-container">
+        <!-- Botón Menú Hamburguesa -->
+        <button class="menu-hamburguesa" id="menuToggle" aria-label="Menú">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <div class="header-logo-section">
+            <a href="index.html" class="header-link">
+                <div class="header-logo">
+                    <img src="assets/Logo-final.png" alt="AKAX Logo" style="width: 100%; height: 100%; object-fit: contain;">
+                </div>
+                <div>
+                    <h1 class="header-title">AKAX</h1>
+                    <p class="header-subtitle">Hongos Pajomel</p>
+                    <p class="header-subtitle-small">Sistema de Ventas</p>
+                </div>
+            </a>
+        </div>
+        
+        <!-- Indicador de Conexión Mejorado -->
+        <div id="connectionIndicator" class="connection-indicator connected">
+            <span class="connection-icon" id="connectionIcon">✅</span>
+            <span class="connection-status" id="connectionStatus">Conectado</span>
+        </div>
+    </div>
+</header>
+
+<!-- Overlay del Menú -->
+<div class="nav-sidebar-overlay" id="navOverlay"></div>
+
+<!-- Menú Lateral Desplegable -->
+<aside class="nav-sidebar" id="navSidebar">
+    <div class="nav-sidebar-header">
+        <img src="assets/Logo-final.png" alt="AKAX">
+        <div>
+            <h3 class="nav-sidebar-title">AKAX</h3>
+            <p style="margin: 0; font-size: 0.85rem; opacity: 0.9;">Menú Principal</p>
+        </div>
+    </div>
+    
+    <ul class="nav-sidebar-links">
+        <li>
+            <a href="index.html" class="nav-sidebar-link">
+                <span>📊</span>
+                <span>Inicio</span>
+            </a>
+        </li>
+        <li>
+            <a href="registro-venta.html" class="nav-sidebar-link">
+                <span>➕</span>
+                <span>Nueva Venta</span>
+            </a>
+        </li>
+        <li>
+            <a href="gestion-ventas.html" class="nav-sidebar-link">
+                <span>📦</span>
+                <span>Gestión Ventas</span>
+            </a>
+        </li>
+        <li>
+            <a href="clientes.html" class="nav-sidebar-link">
+                <span>👥</span>
+                <span>Clientes</span>
+            </a>
+        </li>
+        <li>
+            <a href="informes.html" class="nav-sidebar-link">
+                <span>📄</span>
+                <span>Informes</span>
+            </a>
+        </li>
+    </ul>
+</aside>
+
+<!-- Navegación Desktop (mantener como estaba) -->
+<nav class="nav">
+    <div class="nav-container">
+        <a href="index.html" class="nav-link">📊 Inicio</a>
+        <a href="registro-venta.html" class="nav-link">➕ Nueva Venta</a>
+        <a href="gestion-ventas.html" class="nav-link">📦 Gestión Ventas</a>
+        <a href="clientes.html" class="nav-link">👥 Clientes</a>
+        <a href="informes.html" class="nav-link">📄 Informes</a>
+    </div>
+</nav>
+
+
+    <!-- Main Content -->
+    <main>
+      <main>
+    <h2 class="page-title">Bienvenido al Sistema de Ventas</h2>
+
+    <!-- ✅ FILTROS RÁPIDOS -->
+    <div class="card" style="margin-bottom: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <h3 style="margin: 0 0 0.5rem 0; color: var(--color-primary);">📊 Período a Visualizar</h3>
+                <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-light);">
+                    Selecciona el rango de fechas para las estadísticas
+                </p>
+            </div>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <button class="btn-periodo" data-periodo="hoy">Hoy</button>
+                <button class="btn-periodo" data-periodo="semana">Esta Semana</button>
+                <button class="btn-periodo active" data-periodo="mes">Este Mes</button>
+                <button class="btn-periodo" data-periodo="trimestre">Trimestre</button>
+                <button class="btn-periodo" data-periodo="ano">Este Año</button>
+                <button class="btn-periodo" data-periodo="todo">Todo</button>
+            </div>
+        </div>
+        <div id="periodoInfo" style="margin-top: 1rem; padding: 0.75rem; background: #f0f9ff; border-radius: 8px; font-size: 0.9rem; color: var(--color-text);">
+            📅 <strong>Mostrando:</strong> <span id="periodoTexto">Este Mes</span>
+        </div>
+    </div>
+
+
+        <!-- Stats Cards -->
+        <div class="stats-grid" id="statsContainer">
+            <div class="stat-card stat-success">
+                <div class="stat-content">
+                    <div>
+                        <p class="stat-label">Total Ventas</p>
+                        <p class="stat-value" id="totalVentas">Q0.00</p>
+                    </div>
+                    <div class="stat-icon">💰</div>
+                </div>
+            </div>
+            
+            <div class="stat-card stat-info">
+                <div class="stat-content">
+                    <div>
+                        <p class="stat-label">Número de Ventas</p>
+                        <p class="stat-value" id="numeroVentas">0</p>
+                    </div>
+                    <div class="stat-icon">📄</div>
+                </div>
+            </div>
+
+            <div class="stat-card stat-warning">
+                <div class="stat-content">
+                    <div>
+                        <p class="stat-label">Cantidad Total Vendida</p>
+                        <p class="stat-value" id="cantidadTotal">0.00</p>
+                    </div>
+                    <div class="stat-icon">📈</div>
+                </div>
+            </div>
+
+            <div class="stat-card stat-purple">
+                <div class="stat-content">
+                    <div>
+                        <p class="stat-label">Promedio por Venta</p>
+                        <p class="stat-value" id="promedioVenta">Q0.00</p>
+                    </div>
+                    <div class="stat-icon">💵</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Sales -->
+        <div class="card mt-2">
+            <h3>Últimas Ventas</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Hongo</th>
+                            <th>Cantidad</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recentSalesTable">
+                        <tr>
+                            <td colspan="4" class="text-center">
+                                <div class="spinner"></div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2025 AKAX - Hongos Pajomel</p>
+        <p style="font-size: 0.85rem; opacity: 0.6;">Cultivando calidad, cosechando confianza</p>
+    </footer>
+
+    <script type="module" src="js/index.js"></script>
+</body>
+</html>

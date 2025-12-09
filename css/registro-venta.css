@@ -1,0 +1,412 @@
+/* css/registro-venta.css - BOTONES MEJORADOS */
+.page-title {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: var(--color-text);
+}
+
+/* Secciones del formulario */
+.form-section {
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid var(--color-border);
+}
+
+.form-section:last-of-type {
+    border-bottom: none;
+}
+
+.form-section-title {
+    font-size: 1.3rem;
+    color: var(--color-primary);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Grid con 3 columnas */
+.grid-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+/* Info Box */
+.info-box {
+    background: #f0f9ff;
+    border-left: 4px solid var(--color-secondary);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+}
+
+.info-box p {
+    margin: 0.5rem 0;
+    color: var(--color-text);
+}
+
+/* Resumen de Totales */
+.total-summary {
+    background: linear-gradient(135deg, #f9fafb 0%, #e5e7eb 100%);
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    border: 2px solid var(--color-border);
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    font-size: 1.1rem;
+    color: var(--color-text);
+}
+
+.total-row:not(:last-child) {
+    border-bottom: 1px solid var(--color-border);
+}
+
+.total-main {
+    background: white;
+    margin: 1rem -1rem -1rem -1rem;
+    padding: 1.5rem 2rem;
+    border-radius: 0 0 12px 12px;
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+
+.total-main span:last-child {
+    color: var(--color-success);
+    font-size: 2rem;
+}
+
+.text-danger {
+    color: var(--color-danger);
+}
+
+/* ==================== BOTONES MEJORADOS ==================== */
+.action-buttons {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.btn-large {
+    padding: 1.5rem 2.5rem;
+    font-size: 1.3rem;
+    font-weight: 700;
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    letter-spacing: 0.5px;
+}
+
+.btn-large::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn-large:hover::before {
+    width: 400px;
+    height: 400px;
+}
+
+.btn-large:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.btn-large:active {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+/* Botón Vista Previa - Estilo Secundario */
+.btn-secondary.btn-large {
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+    color: white;
+    border: 2px solid #9ca3af;
+}
+
+.btn-secondary.btn-large:hover {
+    background: linear-gradient(135deg, #4b5563 0%, #374151 100%);
+    border-color: #6b7280;
+}
+
+/* Botón Registrar Venta - Estilo Principal MEJORADO */
+.btn-primary.btn-large {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border: none;
+    position: relative;
+    animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.btn-primary.btn-large::after {
+    content: '✓';
+    position: absolute;
+    right: 2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.8rem;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.btn-primary.btn-large:hover::after {
+    opacity: 1;
+}
+
+.btn-primary.btn-large:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    box-shadow: 0 10px 40px rgba(16, 185, 129, 0.4);
+}
+
+@keyframes pulse-glow {
+    0%, 100% {
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    }
+    50% {
+        box-shadow: 0 4px 25px rgba(16, 185, 129, 0.5);
+    }
+}
+
+/* Estados del botón */
+.btn-large:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    animation: none;
+}
+
+.btn-large:disabled:hover {
+    transform: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* Efecto de carga */
+.btn-loading {
+    pointer-events: none;
+    position: relative;
+}
+
+.btn-loading::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    left: 50%;
+    margin-left: -10px;
+    margin-top: -10px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spinner 0.8s linear infinite;
+}
+
+@keyframes spinner {
+    to { transform: rotate(360deg); }
+}
+
+/* Modal Mejorado */
+.modal-large {
+    max-width: 900px;
+    width: 95%;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--color-border);
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: var(--color-primary);
+}
+
+.modal-close {
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--color-text-light);
+    padding: 0.5rem;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s;
+}
+
+.modal-close:hover {
+    background: var(--color-danger);
+    color: white;
+    transform: rotate(90deg);
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid var(--color-border);
+}
+
+/* Preview Container */
+.preview-container {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.preview-section {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.preview-section:last-child {
+    border-bottom: none;
+}
+
+.preview-section h3 {
+    color: var(--color-primary);
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.preview-item {
+    padding: 0.75rem;
+    background: var(--color-bg);
+    border-radius: 8px;
+}
+
+.preview-label {
+    font-weight: 600;
+    color: var(--color-text-light);
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+    display: block;
+}
+
+.preview-value {
+    color: var(--color-text);
+    font-size: 1rem;
+}
+
+.preview-total-box {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.preview-total-box h3 {
+    color: white;
+    margin-bottom: 0.5rem;
+}
+
+.preview-total-amount {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.preview-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.badge-success {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.badge-warning {
+    background: #fed7aa;
+    color: #92400e;
+}
+
+.badge-info {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 1.5rem;
+    }
+    
+    .form-section-title {
+        font-size: 1.1rem;
+    }
+    
+    .grid-3 {
+        grid-template-columns: 1fr;
+    }
+    
+    .action-buttons {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .btn-large {
+        padding: 1.2rem 2rem;
+        font-size: 1.1rem;
+    }
+    
+    .total-main {
+        font-size: 1.1rem;
+    }
+    
+    .total-main span:last-child {
+        font-size: 1.5rem;
+    }
+    
+    .modal-large {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        border-radius: 0;
+    }
+    
+    .preview-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .preview-total-amount {
+        font-size: 2rem;
+    }
+}
