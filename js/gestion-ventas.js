@@ -836,7 +836,7 @@ async function generarReciboPDF(venta) {
         doc.setTextColor(...colorGris);
         doc.setFont(undefined, 'italic');
         doc.text('Gracias por su compra', 105, footerY+5, { align: 'center' });
-        doc.text('Este es un recibo generado automaticamente', 105, footerY+10, { align: 'center' });
+        
         
         const nombreArchivo = `Recibo_${venta.numeroFactura||'REC'}_${(venta.clienteNombre||'Cliente').replace(/\s+/g,'_')}.pdf`;
         doc.save(nombreArchivo);
@@ -862,4 +862,5 @@ async function cargarImagenComoBase64(rutaImagen) {
         console.error('Error al cargar imagen:', error);
         return null;
     }
+
 }
