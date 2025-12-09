@@ -20,24 +20,46 @@ document.addEventListener('DOMContentLoaded', async () => {
         mostrarErrorConexion();
     }
 });
+// En js/index.js (reemplaza la función del final)
 
 function configurarMenu() {
     const menuToggle = document.getElementById('menuToggle');
     const navSidebar = document.getElementById('navSidebar');
     const navOverlay = document.getElementById('navOverlay');
     
-    if (!menuToggle || !navSidebar) return;
+    // 1. Lógica de abrir/cerrar
+    if (menuToggle && navSidebar) {
+        function toggle() {
+            menuToggle.classList.toggle('active');
+            navSidebar.classList.toggle('active');
+            navOverlay?.classList.toggle('active');
+        }
 
-    function toggle() {
-        menuToggle.classList.toggle('active');
-        navSidebar.classList.toggle('active');
-        navOverlay?.classList.toggle('active');
+        menuToggle.addEventListener('click', toggle);
+        navOverlay?.addEventListener('click', toggle);
+        document.querySelectorAll('.nav-sidebar-link').forEach(l => l.addEventListener('click', toggle));
     }
 
-    menuToggle.addEventListener('click', toggle);
-    navOverlay?.addEventListener('click', toggle);
-    document.querySelectorAll('.nav-sidebar-link').forEach(l => l.addEventListener('click', toggle));
+    // 2. Lógica de "PINTARSE DE VERDE" (Active State)
+    // Obtener nombre del archivo actual (ej: index.html)
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    
+    const marcarActivo = (selector) => {
+        document.querySelectorAll(selector).forEach(link => {
+            const href = link.getAttribute('href');
+            // Si el link coincide con la página actual
+            if (href === currentPage || (currentPage === '' && href === 'index.html')) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active'); // Limpiar por si acaso
+            }
+        });
+    };
+
+    marcarActivo('.nav-link');          // Para escritorio
+    marcarActivo('.nav-sidebar-link');  // Para celular
 }
+  
 
 function configurarFiltrosPeriodo() {
     const botones = document.querySelectorAll('.btn-periodo');
@@ -228,4 +250,5 @@ function mostrarErrorConexion() {
     document.getElementById('numeroVentas').textContent = '0';
     document.getElementById('cantidadTotal').textContent = '0';
     document.getElementById('promedioVenta').textContent = 'Q0.00';
+
 }
