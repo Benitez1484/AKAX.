@@ -1,4 +1,4 @@
-/* css/global.css - VERSIÓN MEJORADA */
+/* css/global.css - VERSIÓN MEJORADA CON INDICADOR CORREGIDO */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 * {
@@ -627,259 +627,181 @@ tbody tr:last-child td {
   color: #1e40af;
 }
 
-/* ==================== INDICADOR DE CONEXIÓN ==================== */
+/* ==================== INDICADOR DE CONEXIÓN MEJORADO ==================== */
 .connection-indicator {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1.5rem;
-    border-radius: var(--radius-full);
-    font-size: 0.9rem;
-    font-weight: 600;
-    transition: var(--transition);
-    cursor: pointer;
-    border: 2px solid;
-    position: relative;
-    overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  font-weight: 700; /* Texto más grueso */
+  transition: var(--transition);
+  cursor: default;
+  border: 2px solid;
+  position: relative;
+  background: rgba(255, 255, 255, 0.9); /* Fondo casi blanco sólido */
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Sombra suave */
 }
 
 .connection-indicator::before {
-    content: '';
-    position: absolute;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    animation: pulse 2s infinite;
+  display: none; 
 }
 
-@keyframes pulse {
-    0%, 100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-    50% {
-        transform: scale(1.5);
-        opacity: 0.5;
-    }
-}
-
+/* ESTADO: CONECTANDO (Amarillo/Naranja) */
 .connection-indicator.connecting {
-    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-    border-color: #f59e0b;
-    color: #92400e;
+  border-color: #f59e0b;
+  color: #92400e; /* Texto Marrón oscuro */
+  background: #fffbeb; /* Fondo amarillo muy claro */
 }
 
 .connection-indicator.connecting::before {
-    background: #f59e0b;
-    left: 1rem;
+  background: #f59e0b;
+  animation: pulse 2s infinite;
 }
 
+/* ESTADO: CONECTADO (Verde) */
 .connection-indicator.connected {
-    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-    border-color: #10b981;
-    color: #065f46;
+  border-color: #10b981;
+  color: #064e3b; /* ✅ CAMBIO CLAVE: Texto Verde Oscuro */
+  background: #ecfdf5; /* Fondo verde muy claro */
 }
 
 .connection-indicator.connected::before {
-    background: #10b981;
-    left: 1rem;
-    animation: none;
+  background: #10b981;
+  animation: none;
 }
 
+/* ESTADO: DESCONECTADO (Rojo) */
 .connection-indicator.disconnected {
-    background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%);
-    border-color: #ef4444;
-    color: #991b1b;
+  border-color: #ef4444;
+  color: #7f1d1d; /* Texto Rojo oscuro */
+  background: #fef2f2; /* Fondo rojo muy claro */
 }
 
 .connection-indicator.disconnected::before {
-    background: #ef4444;
-    left: 1rem;
-    animation: blink 1s infinite;
-}
-
-@keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-}
-
-.connection-indicator:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
+  background: #ef4444;
+  animation: blink 1s infinite;
 }
 
 .connection-icon {
-    font-size: 1.2rem;
-    display: flex;
-    align-items: center;
+  font-size: 1.1rem;
+  margin-right: 0.25rem;
 }
 
 .connection-status {
-    font-weight: 700;
-    letter-spacing: 0.3px;
+  font-weight: 700;
+  font-size: 0.85rem;
 }
 
+/* Ocultar detalles por defecto */
 .connection-details {
-    display: none;
-    position: absolute;
-    top: 100%;
-    right: 0;
-    margin-top: 0.5rem;
-    background: white;
-    padding: 1rem;
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-xl);
-    min-width: 250px;
-    z-index: 1000;
-    border: 2px solid var(--color-border);
-}
-
-.connection-indicator:hover .connection-details {
-    display: block;
-    animation: slideDown 0.3s ease;
-}
-
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.connection-details p {
-    margin: 0.5rem 0;
-    font-size: 0.875rem;
-    color: var(--color-text);
-}
-
-.connection-details strong {
-    color: var(--color-primary);
-}
-
-.retry-button {
-    width: 100%;
-    margin-top: 0.75rem;
-    padding: 0.5rem;
-    background: var(--color-primary);
-    color: white;
-    border: none;
-    border-radius: var(--radius-md);
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition);
-}
-
-.retry-button:hover {
-    background: var(--color-primary-dark);
-    transform: translateY(-2px);
+  display: none;
 }
 
 /* ==================== SISTEMA DE TOAST ==================== */
 .toast-container {
-    position: fixed;
-    top: 100px;
-    right: 20px;
-    z-index: 9999;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    max-width: 400px;
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 400px;
 }
 
 .toast {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem 1.5rem;
-    background: white;
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-xl);
-    border-left: 4px solid;
-    min-width: 300px;
-    animation: slideInRight 0.3s ease;
-    position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  border-left: 4px solid;
+  min-width: 300px;
+  animation: slideInRight 0.3s ease;
+  position: relative;
 }
 
 @keyframes slideInRight {
-    from {
-        opacity: 0;
-        transform: translateX(100px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .toast-hide {
-    animation: slideOutRight 0.3s ease forwards;
+  animation: slideOutRight 0.3s ease forwards;
 }
 
 @keyframes slideOutRight {
-    from {
-        opacity: 1;
-        transform: translateX(0);
-    }
-    to {
-        opacity: 0;
-        transform: translateX(100px);
-    }
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100px);
+  }
 }
 
 .toast-success {
-    border-left-color: var(--color-success);
-    background: linear-gradient(90deg, #d1fae5 0%, white 20%);
+  border-left-color: var(--color-success);
+  background: linear-gradient(90deg, #d1fae5 0%, white 20%);
 }
 
 .toast-error {
-    border-left-color: var(--color-danger);
-    background: linear-gradient(90deg, #fecaca 0%, white 20%);
+  border-left-color: var(--color-danger);
+  background: linear-gradient(90deg, #fecaca 0%, white 20%);
 }
 
 .toast-warning {
-    border-left-color: var(--color-warning);
-    background: linear-gradient(90deg, #fed7aa 0%, white 20%);
+  border-left-color: var(--color-warning);
+  background: linear-gradient(90deg, #fed7aa 0%, white 20%);
 }
 
 .toast-info {
-    border-left-color: var(--color-secondary);
-    background: linear-gradient(90deg, #dbeafe 0%, white 20%);
+  border-left-color: var(--color-secondary);
+  background: linear-gradient(90deg, #dbeafe 0%, white 20%);
 }
 
 .toast-icon {
-    font-size: 1.5rem;
-    flex-shrink: 0;
+  font-size: 1.5rem;
+  flex-shrink: 0;
 }
 
 .toast-message {
-    flex: 1;
-    font-weight: 500;
-    color: var(--color-text);
+  flex: 1;
+  font-weight: 500;
+  color: var(--color-text);
 }
 
 .toast-close {
-    background: transparent;
-    border: none;
-    font-size: 1.2rem;
-    cursor: pointer;
-    color: var(--color-text-light);
-    padding: 0.25rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    transition: var(--transition);
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: var(--color-text-light);
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  transition: var(--transition);
 }
 
 .toast-close:hover {
-    background: var(--color-bg);
-    color: var(--color-text);
+  background: var(--color-bg);
+  color: var(--color-text);
 }
 
 /* ==================== RESPONSIVE ==================== */
@@ -1122,72 +1044,6 @@ tbody tr:last-child td {
 
 .nav-sidebar-link span:first-child {
   font-size: 1.5rem;
-}
-
-/* ==================== INDICADOR DE CONEXIÓN MEJORADO ==================== */
-.connection-indicator {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  border-radius: var(--radius-full);
-  font-size: 0.85rem;
-  font-weight: 600;
-  transition: var(--transition);
-  cursor: default;
-  border: 2px solid;
-  position: relative;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-}
-
-.connection-indicator::before {
-  display: none; /* ✅ OCULTAR EL PUNTO */
-}
-
-.connection-indicator.connecting {
-  border-color: rgba(245, 158, 11, 0.5);
-  color: #fef3c7;
-}
-
-.connection-indicator.connecting::before {
-  background: #f59e0b;
-  animation: pulse 2s infinite;
-}
-
-.connection-indicator.connected {
-  border-color: rgba(16, 185, 129, 0.5);
-  color: #d1fae5;
-}
-
-.connection-indicator.connected::before {
-  background: #10b981;
-  animation: none;
-}
-
-.connection-indicator.disconnected {
-  border-color: rgba(239, 68, 68, 0.5);
-  color: #fecaca;
-}
-
-.connection-indicator.disconnected::before {
-  background: #ef4444;
-  animation: blink 1s infinite;
-}
-
-.connection-icon {
-  font-size: 1rem;
-  margin-left: 0.5rem;
-}
-
-.connection-status {
-  font-weight: 600;
-  font-size: 0.85rem;
-}
-
-/* Ocultar detalles por defecto */
-.connection-details {
-  display: none;
 }
 
 /* ==================== RESPONSIVE - REORDENAR ELEMENTOS ==================== */
