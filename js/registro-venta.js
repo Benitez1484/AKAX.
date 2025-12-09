@@ -514,20 +514,41 @@ async function guardarNuevoCliente() {
     }
 }
 
+// En js/registro-venta.js (reemplaza la función del final)
+
 function configurarMenu() {
     const menuToggle = document.getElementById('menuToggle');
     const navSidebar = document.getElementById('navSidebar');
     const navOverlay = document.getElementById('navOverlay');
     
-    if (!menuToggle || !navSidebar) return;
+    // 1. Lógica de abrir/cerrar
+    if (menuToggle && navSidebar) {
+        function toggle() {
+            menuToggle.classList.toggle('active');
+            navSidebar.classList.toggle('active');
+            navOverlay?.classList.toggle('active');
+        }
 
-    function toggle() {
-        menuToggle.classList.toggle('active');
-        navSidebar.classList.toggle('active');
-        navOverlay?.classList.toggle('active');
+        menuToggle.addEventListener('click', toggle);
+        navOverlay?.addEventListener('click', toggle);
+        document.querySelectorAll('.nav-sidebar-link').forEach(l => l.addEventListener('click', toggle));
     }
 
-    menuToggle.addEventListener('click', toggle);
-    navOverlay?.addEventListener('click', toggle);
-    document.querySelectorAll('.nav-sidebar-link').forEach(l => l.addEventListener('click', toggle));
+    // 2. Lógica de "PINTARSE DE VERDE" (Active State)
+    const currentPage = window.location.pathname.split('/').pop(); // ej: registro-venta.html
+    
+    const marcarActivo = (selector) => {
+        document.querySelectorAll(selector).forEach(link => {
+            const href = link.getAttribute('href');
+            // Comparar si el href del link coincide con la pagina actual
+            if (href === currentPage) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+    };
+
+    marcarActivo('.nav-link');
+    marcarActivo('.nav-sidebar-link');
 }
